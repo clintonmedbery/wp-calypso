@@ -3,6 +3,7 @@
  * External dependencies
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
 import page from 'page';
@@ -14,6 +15,8 @@ import Button from 'components/button';
 import DashboardWidget from 'woocommerce/components/dashboard-widget';
 import DashboardWidgetRow from 'woocommerce/components/dashboard-widget/row';
 import { getLink } from 'woocommerce/lib/nav-utils';
+import { getTotalProducts } from 'woocommerce/state/sites/products/selectors';
+import InventoryWidget from './dashboard-widgets/inventory';
 import ShareWidget from 'woocommerce/components/share-widget';
 import { recordTrack } from 'woocommerce/lib/analytics';
 
@@ -54,6 +57,7 @@ class ManageNoOrdersView extends Component {
 				imagePosition="bottom"
 				imageFlush
 				title={ translate( 'Looking for stats?' ) }
+				width="half"
 			>
 				<p>
 					{ translate(
@@ -64,6 +68,10 @@ class ManageNoOrdersView extends Component {
 				<Button onClick={ trackClick }>{ translate( 'View stats' ) }</Button>
 			</DashboardWidget>
 		);
+	};
+
+	renderInventoryWidget = () => {
+		return <InventoryWidget />;
 	};
 
 	renderViewAndTestWidget = () => {
@@ -77,6 +85,7 @@ class ManageNoOrdersView extends Component {
 			<DashboardWidget
 				className="dashboard__view-and-test-widget"
 				title={ translate( 'Test all the things' ) }
+				width="half"
 			>
 				<p>
 					{ translate(
@@ -98,11 +107,12 @@ class ManageNoOrdersView extends Component {
 	};
 
 	render() {
+		const { hasProducts } = this.props;
 		return (
 			<div className="dashboard__manage-no-orders">
 				{ this.renderShareWidget() }
 				<DashboardWidgetRow>
-					{ this.renderStatsWidget() }
+					{ hasProducts ? this.renderInventoryWidget() : this.renderStatsWidget() }
 					{ this.renderViewAndTestWidget() }
 				</DashboardWidgetRow>
 			</div>
@@ -110,4 +120,6 @@ class ManageNoOrdersView extends Component {
 	}
 }
 
-export default localize( ManageNoOrdersView );
+export default connect( state => ( {
+	hasProducts: getTotalProducts( state ) > 0,
+} ) )( localize( ManageNoOrdersView ) );
