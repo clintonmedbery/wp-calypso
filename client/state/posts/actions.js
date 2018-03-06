@@ -216,7 +216,7 @@ export function savePostSuccess( siteId, postId = null, savedPost, post ) {
  * @return {Function}        Action thunk
  */
 export function savePost( siteId, postId = null, post ) {
-	return async dispatch => {
+	return dispatch => {
 		dispatch( {
 			type: POST_SAVE,
 			siteId,
@@ -224,10 +224,14 @@ export function savePost( siteId, postId = null, post ) {
 			post,
 		} );
 
-		let postHandle = wpcom.site( siteId ).post( postId );
 		const normalizedPost = normalizePostForApi( post );
-		postHandle = postHandle[ postId ? 'update' : 'add' ].bind( postHandle );
-		return postHandle( { apiVersion: '1.2' }, normalizedPost )
+		const method = postId ? 'update' : 'add';
+		const saveResult = wpcom
+			.site( siteId )
+			.post( postId )
+			[ method ]( { apiVersion: '1.2' }, normalizedPost );
+
+		saveResult
 			.then( savedPost => {
 				dispatch( savePostSuccess( siteId, postId, savedPost, post ) );
 				dispatch( receivePost( savedPost ) );
@@ -240,6 +244,8 @@ export function savePost( siteId, postId = null, post ) {
 					error,
 				} );
 			} );
+
+		return saveResult;
 	};
 }
 
@@ -272,10 +278,12 @@ export function deletePost( siteId, postId ) {
 			postId,
 		} );
 
-		return wpcom
+		const deleteResult = wpcom
 			.site( siteId )
 			.post( postId )
-			.delete()
+			.delete();
+
+		deleteResult
 			.then( () => {
 				dispatch( {
 					type: POST_DELETE_SUCCESS,
@@ -291,6 +299,8 @@ export function deletePost( siteId, postId ) {
 					error,
 				} );
 			} );
+
+		return deleteResult;
 	};
 }
 
@@ -310,10 +320,12 @@ export function restorePost( siteId, postId ) {
 			postId,
 		} );
 
-		return wpcom
+		const restoreResult = wpcom
 			.site( siteId )
 			.post( postId )
-			.restore()
+			.restore();
+
+		restoreResult
 			.then( restoredPost => {
 				dispatch( {
 					type: POST_RESTORE_SUCCESS,
@@ -330,6 +342,8 @@ export function restorePost( siteId, postId ) {
 					error,
 				} );
 			} );
+
+		return restoreResult;
 	};
 }
 
