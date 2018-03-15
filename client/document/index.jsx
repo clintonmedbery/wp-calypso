@@ -157,21 +157,26 @@ class Document extends React.Component {
 					<script
 						type="text/javascript"
 						nonce={ inlineScriptNonce }
+						key={ '__inline_script' }
 						dangerouslySetInnerHTML={ {
 							__html: inlineScript,
 						} }
 					/>
 
-					{ i18nLocaleScript && <script src={ i18nLocaleScript } /> }
+					{ i18nLocaleScript && <script key={ i18nLocaleScript } src={ i18nLocaleScript } /> }
 					<script
+						key="__manifest"
 						dangerouslySetInnerHTML={ {
 							__html: manifest,
 						} }
 					/>
-					{ entrypoint.map( asset => <script src={ asset } /> ) }
-					{ chunk && <script src={ chunk } /> }
-					<script type="text/javascript">window.AppBoot();</script>
+					{ entrypoint.map( asset => <script key={ asset } src={ asset } /> ) }
+					{ chunk && <script key={ chunk } src={ chunk } /> }
+					<script key="__boot" type="text/javascript">
+						window.AppBoot();
+					</script>
 					<script
+						key="__console_warning"
 						dangerouslySetInnerHTML={ {
 							__html: `
 						 (function() {
@@ -192,6 +197,7 @@ class Document extends React.Component {
 					{ // Load GA only if enabled in the config.
 					appConfig( 'google_analytics_enabled' ) && (
 						<script
+							key="__ga"
 							async={ true }
 							type="text/javascript"
 							src="https://www.google-analytics.com/analytics.js"
