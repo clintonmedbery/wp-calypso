@@ -12,5 +12,5 @@ compiler = webpack( config, ( err, stats ) => {
 		console.error( err );
 	}
 	const out = stats.toJson( { source: false, reasons: false, issuer: false, timings: true } );
-	fs.writeFileSync( path.join( __dirname, '..', 'stats.json' ), JSON.stringify( out, '\t', 2 ) );
+	fs.writeFileSync( path.join( __dirname, '..', 'stats.json' ), JSON.stringify( out, null, '\t' ) );
 } );
