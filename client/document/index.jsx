@@ -22,7 +22,7 @@ class Document extends React.Component {
 	render() {
 		const {
 			app,
-			chunk,
+			chunkFiles,
 			commitSha,
 			faviconURL,
 			head,
@@ -172,7 +172,7 @@ class Document extends React.Component {
 						} }
 					/>
 					{ entrypoint.map( asset => <script key={ asset } src={ asset } /> ) }
-					{ chunk && <script key={ chunk } src={ chunk } /> }
+					{ chunkFiles.map( chunk => <script key={ chunk } src={ chunk } /> ) }
 					<script key="__boot" nonce={ inlineScriptNonce } type="text/javascript">
 						window.AppBoot();
 					</script>

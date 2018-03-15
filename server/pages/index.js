@@ -10,7 +10,7 @@ import crypto from 'crypto';
 import { execSync } from 'child_process';
 import cookieParser from 'cookie-parser';
 import debugFactory from 'debug';
-import { get, includes, pick, forEach, intersection, snakeCase } from 'lodash';
+import { get, includes, pick, flatten, forEach, intersection, snakeCase } from 'lodash';
 import bodyParser from 'body-parser';
 
 /**
@@ -78,6 +78,23 @@ const getAssets = ( () => {
 		return assets;
 	};
 } )();
+
+const getFilesForChunk = chunkName => {
+	const assets = getAssets();
+
+	function getChunk( chunkId ) {
+		return assets.chunks.find( chunk => chunk.id === chunkId );
+	}
+
+	const chunk = getChunk( chunkName );
+	if ( ! chunk ) {
+		return [];
+	}
+
+	return chunk.files.concat(
+		flatten( chunk.siblings.map( sibling => getChunk( sibling ).files ) )
+	);
+};
 
 /**
  * Generate an object that maps asset names name to a server-relative urls.
@@ -539,7 +556,7 @@ module.exports = function() {
 					req.context = Object.assign( {}, req.context, { sectionName: section.name } );
 
 					if ( config.isEnabled( 'code-splitting' ) ) {
-						req.context.chunk = getAssets().assetsByChunkName[ section.name ];
+						req.context.chunkFiles = getFilesForChunk( section.name );
 					}
 
 					if ( section.secondary && req.context ) {
