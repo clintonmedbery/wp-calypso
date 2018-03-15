@@ -28,7 +28,7 @@ const config = require( './server/config' );
  */
 const calypsoEnv = config( 'env_id' );
 const bundleEnv = config( 'env' );
-const isDevelopment = bundleEnv === 'development';
+const isDevelopment = bundleEnv !== 'production';
 const shouldMinify = process.env.MINIFY_JS === 'true' || bundleEnv === 'production';
 
 // load in the babel config from babelrc and disable commonjs transform
@@ -95,7 +95,7 @@ const babelLoader = {
 const webpackConfig = {
 	bail: ! isDevelopment,
 	entry: {},
-	mode: bundleEnv,
+	mode: isDevelopment ? 'development' : 'production',
 	devtool: isDevelopment ? '#eval' : process.env.SOURCEMAP || false, // in production builds you can specify a source-map via env var
 	output: {
 		path: path.join( __dirname, 'public' ),
@@ -118,7 +118,7 @@ const webpackConfig = {
 		},
 		runtimeChunk: { name: 'manifest' },
 		namedModules: true,
-		namedChunks: true,
+		namedChunks: isDevelopment,
 		minimize: shouldMinify,
 	},
 	module: {
