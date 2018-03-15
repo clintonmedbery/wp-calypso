@@ -71,7 +71,7 @@ class ManageNoOrdersView extends Component {
 	};
 
 	renderInventoryWidget = () => {
-		return <InventoryWidget />;
+		return <InventoryWidget width="half" />;
 	};
 
 	renderViewAndTestWidget = () => {

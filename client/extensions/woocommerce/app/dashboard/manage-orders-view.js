@@ -31,6 +31,7 @@ import { getSelectedSiteWithFallback } from 'woocommerce/state/sites/selectors';
 import { getLink } from 'woocommerce/lib/nav-utils';
 import { getPaymentCurrencySettings } from 'woocommerce/state/sites/settings/general/selectors';
 import { getTotalReviews } from 'woocommerce/state/sites/reviews/selectors';
+import InventoryWidget from './dashboard-widgets/inventory';
 import ShareWidget from 'woocommerce/components/share-widget';
 import QuerySettingsGeneral from 'woocommerce/components/query-settings-general';
 
@@ -152,6 +153,10 @@ class ManageOrdersView extends Component {
 		);
 	};
 
+	renderInventoryWidget = () => {
+		return <InventoryWidget width="third" />;
+	};
+
 	render() {
 		const { site, translate, orders, user } = this.props;
 		return (
@@ -175,23 +180,27 @@ class ManageOrdersView extends Component {
 					{ this.possiblyRenderReviewsWidget() }
 				</DashboardWidgetRow>
 
-				<DashboardWidget
-					className="dashboard__reports-widget"
-					image="/calypso/images/extensions/woocommerce/woocommerce-reports.svg"
-					imagePosition="left"
-					title={ translate( 'Reports' ) }
-				>
-					<p>
-						{ translate(
-							'See a detailed breakdown of how your store is doing on the stats screen.'
-						) }
-					</p>
-					<p>
-						<Button href={ getLink( '/store/stats/orders/week/:site', site ) }>
-							{ orders.length ? translate( 'View full reports' ) : translate( 'View reports' ) }
-						</Button>
-					</p>
-				</DashboardWidget>
+				<DashboardWidgetRow>
+					{ this.renderInventoryWidget() }
+					<DashboardWidget
+						className="dashboard__reports-widget"
+						image="/calypso/images/extensions/woocommerce/woocommerce-reports.svg"
+						imagePosition="left"
+						width="two-thirds"
+						title={ translate( 'Reports' ) }
+					>
+						<p>
+							{ translate(
+								'See a detailed breakdown of how your store is doing on the stats screen.'
+							) }
+						</p>
+						<p>
+							<Button href={ getLink( '/store/stats/orders/week/:site', site ) }>
+								{ orders.length ? translate( 'View full reports' ) : translate( 'View reports' ) }
+							</Button>
+						</p>
+					</DashboardWidget>
+				</DashboardWidgetRow>
 
 				{ this.possiblyRenderShareWidget() }
 			</div>
