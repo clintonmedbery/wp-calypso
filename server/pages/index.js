@@ -82,18 +82,29 @@ const getAssets = ( () => {
 const getFilesForChunk = chunkName => {
 	const assets = getAssets();
 
-	function getChunk( chunkId ) {
+	function getChunkByName( _chunkName ) {
+		return assets.chunks.find( chunk => chunk.names.some( name => name === _chunkName ) );
+	}
+
+	function getChunkById( chunkId ) {
 		return assets.chunks.find( chunk => chunk.id === chunkId );
 	}
 
-	const chunk = getChunk( chunkName );
+	const chunk = getChunkByName( chunkName );
 	if ( ! chunk ) {
+		console.warn( 'cannot find the chunk ' + chunkName );
+		console.warn( 'available chunks:' );
+		assets.chunks.forEach( c => {
+			console.log( '    ' + c.id + ': ' + c.names.join( ',' ) );
+		} );
 		return [];
 	}
 
-	return chunk.files.concat(
-		flatten( chunk.siblings.map( sibling => getChunk( sibling ).files ) )
+	const allTheFiles = chunk.files.concat(
+		flatten( chunk.siblings.map( sibling => getChunkById( sibling ).files ) )
 	);
+
+	return allTheFiles;
 };
 
 /**
