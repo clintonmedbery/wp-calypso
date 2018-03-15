@@ -166,17 +166,19 @@ class Document extends React.Component {
 					{ i18nLocaleScript && <script key={ i18nLocaleScript } src={ i18nLocaleScript } /> }
 					<script
 						key="__manifest"
+						nonce={ inlineScriptNonce }
 						dangerouslySetInnerHTML={ {
 							__html: manifest,
 						} }
 					/>
 					{ entrypoint.map( asset => <script key={ asset } src={ asset } /> ) }
 					{ chunk && <script key={ chunk } src={ chunk } /> }
-					<script key="__boot" type="text/javascript">
+					<script key="__boot" nonce={ inlineScriptNonce } type="text/javascript">
 						window.AppBoot();
 					</script>
 					<script
 						key="__console_warning"
+						nonce={ inlineScriptNonce }
 						dangerouslySetInnerHTML={ {
 							__html: `
 						 (function() {
